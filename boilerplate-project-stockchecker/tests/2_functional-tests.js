@@ -1,10 +1,12 @@
-const chaiHttp = require('chai-http');
-const chai = require('chai');
-const assert = chai.assert;
-const server = require('../server');
+const chaiHttp = require("chai-http");
+const chai = require("chai");
+
+// eslint-disable-next-line no-unused-vars
+const { assert } = chai;
+// eslint-disable-next-line no-unused-vars
+const server = require("../server");
 
 chai.use(chaiHttp);
 
-suite('Functional Tests', function() {
-
-});
+// eslint-disable-next-line no-undef
+suite("Functional Tests", () => {});
