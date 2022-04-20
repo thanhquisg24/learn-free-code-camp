@@ -10,13 +10,13 @@ const StockLikeSchema = new mongoose.Schema({
     default: 0,
   },
 });
-const ipLikedSchema = new mongoose.Schema({
+const IpLikedSchema = new mongoose.Schema({
   ip_symbol_hash: {
     type: String,
     required: true,
   },
 });
-const IpLiked = mongoose.model("IpLikeSchema", ipLikedSchema);
-const StockLike = mongoose.model("StockLike", StockLikeSchema);
+const ipLikedSchema = mongoose.model("IpLikedSchema", IpLikedSchema);
+const stockLikeSchema = mongoose.model("StockLikeSchema", StockLikeSchema);
 
-module.exports = { IpLiked, StockLike };
+module.exports = { ipLikedSchema, stockLikeSchema };
