@@ -8,10 +8,13 @@ async function updateLike(stockLikeSchemaId, stock, isLike, ipAdress) {
     // eslint-disable-next-line camelcase
     const ip_symbol_hash = md5(stock.concat(ipAdress));
     const ipLiked = await crud.findOneIpliked(ip_symbol_hash);
-    const isInsLike = !ipLiked;
-    if (isInsLike) {
+    if (ipLiked == null || ipLiked === undefined) {
+      console.log(
+        "🚀 ~ file: api.js ~ line 11 ~ updateLike ~ ipLiked",
+        ipLiked
+      );
       await crud.createIplikeRecord(ip_symbol_hash);
-      await crud.saveStockLikeRecord(stock, stockLikeSchemaId, isInsLike);
+      await crud.saveStockLikeRecord(stock, stockLikeSchemaId, true);
     }
   }
 }
