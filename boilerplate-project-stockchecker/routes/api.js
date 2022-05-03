@@ -9,10 +9,6 @@ async function updateLike(stockLikeSchemaId, stock, isLike, ipAdress) {
     const ip_symbol_hash = md5(stock.concat(ipAdress));
     const ipLiked = await crud.findOneIpliked(ip_symbol_hash);
     if (ipLiked == null || ipLiked === undefined) {
-      console.log(
-        "🚀 ~ file: api.js ~ line 11 ~ updateLike ~ ipLiked",
-        ipLiked
-      );
       await crud.createIplikeRecord(ip_symbol_hash);
       await crud.saveStockLikeRecord(stock, stockLikeSchemaId, true);
     }
@@ -21,14 +17,15 @@ async function updateLike(stockLikeSchemaId, stock, isLike, ipAdress) {
 
 async function getStockItem(stock, isLike, ipAdress) {
   let dto = null;
-  if (Array.isArray(stock)) {
+  const stockLower = stock.toLowerCase();
+  if (Array.isArray(stockLower)) {
     dto = null;
   } else {
-    const stockData = await axiosStock.fetchStockInfo(stock);
-    const stockLikedRecord = await crud.findOneStockLike(stock);
+    const stockData = await axiosStock.fetchStockInfo(stockLower);
+    const stockLikedRecord = await crud.findOneStockLike(stockLower);
     dto = {
       stockData: {
-        stock,
+        stock: stockLower,
         price: stockData.data?.latestPrice,
         likes: stockLikedRecord?.likes || 0,
       },
@@ -36,7 +33,7 @@ async function getStockItem(stock, isLike, ipAdress) {
     await updateLike(
       // eslint-disable-next-line no-underscore-dangle
       stockLikedRecord ? stockLikedRecord._id : null,
-      stock,
+      stockLower,
       isLike,
       ipAdress
     );
@@ -54,6 +51,22 @@ module.exports = (app) => {
     let dto = null;
     if (Array.isArray(stock)) {
       dto = null;
+      let stock_1 = await getStockItem(stock[0], like, ip);
+      let stock_2 = await getStockItem(stock[1], like, ip);
+      dto = {
+        stockData: [
+          {
+            stock: stock_1.stockData.stock,
+            price: stock_1.stockData.price,
+            rel_likes: stock_1.stockData.likes - stock_2.stockData.likes,
+          },
+          {
+            stock: stock_2.stockData.stock,
+            price: stock_2.stockData.price,
+            rel_likes: stock_2.stockData.likes - stock_1.stockData.likes,
+          },
+        ],
+      };
     } else {
       dto = await getStockItem(stock, like, ip);
     }

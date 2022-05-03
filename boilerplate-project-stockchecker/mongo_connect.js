@@ -1,16 +1,16 @@
+require("dotenv").config();
 const mongoose = require("mongoose");
 
-const username = "api_user";
-const password = "api1234";
-const cluster = "localhost:27017";
-const dbname = "api_dev_db";
+// const username = "api_user";
+// const password = "api1234";
+// const cluster = "localhost:27017";
+// const dbname = "api_dev_db";
 
 function connectToMongo() {
   mongoose.connect(
-    `mongodb://${username}:${password}@${cluster}/${dbname}?retryWrites=true&w=majority`,
+    // `mongodb://${username}:${password}@${cluster}/${dbname}?retryWrites=true&w=majority`,
+    process.env.DB,
     {
-      // useNewUrlParser: true,
-      // useFindAndModify: false,
       useUnifiedTopology: true,
     }
   );

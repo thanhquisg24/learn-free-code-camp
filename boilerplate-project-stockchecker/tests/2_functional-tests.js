@@ -54,7 +54,7 @@ describe("Function test", () => {
     });
   });
 
-  describe("/GET stock and liking", () => {
+  describe("/GET stock and liking again", () => {
     it("Viewing the same stock and liking it again", (done) => {
       chai
         .request(server)
@@ -64,12 +64,48 @@ describe("Function test", () => {
           res.body.should.be.a("object");
           res.body.should.have.property("stockData");
           res.body.stockData.should.have.property("stock");
-          console.log(
-            "🚀 ~ file: 2_functional-tests.js ~ line 67 ~ .end ~ res.body.stockData",
-            res.body.stockData
-          );
           res.body.stockData.should.have.property("price");
           res.body.stockData.should.have.property("likes").eql(1);
+          done();
+        });
+    });
+  });
+  describe("/GET two stocks", () => {
+    it("Viewing two stocks", (done) => {
+      chai
+        .request(server)
+        .get("/api/stock-prices?stock=goog&stock=MSFT")
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a("object");
+          res.body.should.have.property("stockData");
+          res.body.stockData.should.be.an("array");
+          res.body.stockData[0].should.have.property("stock");
+          res.body.stockData[0].should.have.property("price");
+          res.body.stockData[0].should.have.property("rel_likes").eql(1);
+          res.body.stockData[1].should.have.property("stock");
+          res.body.stockData[1].should.have.property("price");
+          res.body.stockData[1].should.have.property("rel_likes").eql(-1);
+          done();
+        });
+    });
+  });
+  describe("/GET two stocks", () => {
+    it("Viewing two stocks and liking them", (done) => {
+      chai
+        .request(server)
+        .get("/api/stock-prices?stock=goog&stock=MSFT&like=true")
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a("object");
+          res.body.should.have.property("stockData");
+          res.body.stockData.should.be.an("array");
+          res.body.stockData[0].should.have.property("stock");
+          res.body.stockData[0].should.have.property("price");
+          res.body.stockData[0].should.have.property("rel_likes").eql(1);
+          res.body.stockData[1].should.have.property("stock");
+          res.body.stockData[1].should.have.property("price");
+          res.body.stockData[1].should.have.property("rel_likes").eql(-1);
           done();
         });
     });
